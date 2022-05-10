@@ -1,0 +1,4 @@
+name: invoice
+description: >
+   R Markdown template for invoices
+create_dir: FALSE

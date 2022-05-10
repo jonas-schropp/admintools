@@ -1,0 +1,54 @@
+---
+title: "Template Title"
+author: "Your Name"
+date: "The Date"
+output: output_format
+---
+
+# Invoice Number: `r inv_number` {-}
+
+Dear Representatives of the `r client$name[1]`, <br>
+
+My invoice in relation to the project `r proj_name` with PI `r pi` amounts to:
+
+```{r echo = FALSE}
+data %>%
+  mutate(
+    Compensation = paste0(Compensation, " \u20ac"),
+    Total = paste0(Total, " \u20ac")
+  ) %>%
+  kable()
+```
+
+Subtotal: `r paste0(max(data$Total), " \u20ac \n")`
+```{r echo = FALSE,results='asis'}
+# Apply Discounts
+if(!is.null(discount) & grepl("%", discount)) {
+  Subtotal <- max(data$Total) - as.double(gsub("%", "", discount))/100*max(data$Total)
+  discount <- paste0(discount, " discount: -", as.double(gsub("%", "", discount))/100*max(data$Total), " \u20ac \n")
+  cat(paste0(discount, "\n"))
+  cat(paste0("Subtotal: ", Subtotal, " \u20ac \n"))
+} else if (!is.null(discount) & !grepl("%", discount)){
+  Subtotal <- max(data$Total) - as.double(discount)
+  discount <- paste0("Discount: -", discount, " \u20ac \n")
+  cat(paste0(discount, "\n"))
+  paste0("Subtotal: ", Subtotal, " \u20ac \n")
+} else {
+  Subtotal <- max(data$Total)
+}
+```
+
+```{r echo = FALSE,results='asis'}
+# Apply VAT
+if(!is.null(VAT) & grepl("%", VAT)) {
+  vat <- paste0(VAT, " VAT", ": +", as.double(gsub("%", "", VAT))/100*Subtotal, " \u20ac \n")
+  Total <- Subtotal + as.double(gsub("%", "", VAT))/100*Subtotal
+  cat(paste0(vat, "\n"))
+  cat(paste0("Total: ", Total, " \u20ac \n"))
+} else if (is.null(VAT) | VAT == "Reverse Charge") {
+  cat(paste0("Total: ", Subtotal, " \u20ac \n\n"))
+  cat("Reverse Charge Applies")
+}
+```
+
+
