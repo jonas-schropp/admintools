@@ -1,0 +1,8 @@
+"0","df <- readr::read_csv(""2022-Arbeitszeit.csv"", show_col_types = FALSE) %>%
+  mutate(
+    Month = factor(Month, levels = month.name, labels = month.name)
+  )
+"
+"2","Error in readr::read_csv(""2022-Arbeitszeit.csv"", show_col_types = FALSE) %>%  : 
+  could not find function ""%>%""
+"

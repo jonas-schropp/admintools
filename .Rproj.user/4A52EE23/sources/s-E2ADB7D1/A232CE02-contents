@@ -1,0 +1,93 @@
+---
+title: "2022 Jan-Apr"
+author: "Jonas Schropp"
+date: '2022-05-07'
+output: pdf_document
+---
+
+Dear Annalisa,<br>
+I received 11.682,36 Euro for the invoice in relation to project ‘BCPM-cirrhosis regression’ from February.
+Below is an overview over the hours worked since then and how much is left. I plan to update this file every month.
+
+```{r echo = FALSE}
+suppressPackageStartupMessages(library(dplyr))
+df <- readr::read_csv("2022-Arbeitszeit.csv", show_col_types = FALSE) %>%
+  mutate(
+    Month = factor(Month, levels = month.name, labels = month.name)
+  )
+```
+
+```{r echo = FALSE}
+makeOverall <- function(data, start = 11683, maxmonth = 4) {
+  
+  ms <- month.name[1:maxmonth]
+  
+  data %>% 
+    filter(Month %in% ms) %>%
+    group_by(Month) %>%
+    summarise(
+      Hours = sum(Hours),
+      Compensation = sum(Compensation)
+    ) %>%
+    mutate(
+      Total = cumsum(Compensation),
+      Remaining = start - Total
+    ) %>%
+    knitr::kable(
+      caption = "Overview over total monthly compensation and remaining budget"
+    ) 
+  
+}
+```
+
+```{r echo = FALSE}
+makeSingle <- function(data, month, project) {
+  
+  p <- data %>%
+    filter(
+      Project == project,
+      Month == month
+    )
+  
+  cap <- paste0("Project '", project, "' with ", p$With[1])
+  
+  p %>%
+    select(Date, Task, Hours, Compensation) %>%
+    arrange(Date) %>%
+    mutate(Total = cumsum(Compensation)) %>%
+    knitr::kable(
+      caption = cap
+    ) 
+}
+```
+
+
+# Total Overview
+
+```{r echo = FALSE}
+makeOverall(df)
+```
+
+# January
+
+```{r echo = FALSE}
+makeSingle(df, "January", "Imaging analysis of Body Mass Composition")
+```
+
+# February
+
+```{r echo = FALSE}
+makeSingle(df, "February", "FIMADIA")
+```
+
+# March
+
+```{r echo = FALSE}
+makeSingle(df, "March", "FIMADIA")
+```
+
+# April
+
+```{r echo = FALSE}
+makeSingle(df, "April", "FIMADIA")
+```
