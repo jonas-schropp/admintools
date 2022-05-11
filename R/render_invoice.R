@@ -14,7 +14,15 @@
 #' @import here
 #' @importFrom knitr kable
 #' @examples
-#' render_invoice(data = tb, client = data.frame(name = "Universität Bern"), address = data.frame(), proj_name = "FIMADIA", inv_number = "10001", pi = "Naomi", discount = "10%)
+#' render_invoice(
+#'   data = timesheet,
+#'   client = filter(addresses, Client == "Client B"),
+#'   address = data.frame(filter(addresses, Client == "talynsight")),
+#'   proj_name = "Project 1",
+#'   inv_number = "10098",
+#'   with = "PI Buck Mulligan, PhD",
+#'   discount = "10%"
+#'   )
 
 
 render_invoice <- function(
@@ -65,7 +73,4 @@ render_invoice <- function(
     output_format = "pdf_document",
     encoding = "UTF-8"
   )
-
-
-
 }

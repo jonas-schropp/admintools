@@ -20,7 +20,7 @@ comp_table(
   compensation = Compensation,
   project = Project,
   task = Task,
-  client = With
+  client = Client
 )
 }
 \arguments{

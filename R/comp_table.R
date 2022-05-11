@@ -43,7 +43,7 @@ comp_table <- function(
     compensation = Compensation,
     project = Project,
     task = Task,
-    client = With
+    client = Client
 ) {
 
   # Run some simple tests to check that input makes sense

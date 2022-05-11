@@ -3,13 +3,14 @@ title: "Template Title"
 author: "Your Name"
 date: "The Date"
 output: output_format
+always_allow_html: true
 ---
 
 # Invoice Number: `r inv_number` {-}
 
-Dear Representatives of the `r client$name[1]`, <br>
+Dear Representatives of the `r client$Client[1]`, <br>
 
-My invoice in relation to the project `r proj_name` with PI `r pi` amounts to:
+My invoice in relation to the project `r proj_name` with `r with` amounts to:
 
 ```{r echo = FALSE}
 data %>%

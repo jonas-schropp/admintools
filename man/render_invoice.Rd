@@ -9,19 +9,26 @@ render_invoice(
   data,
   client,
   address,
+  proj_name,
+  inv_number,
+  with,
+  discount,
+  VAT = "20\%",
+  template = system.file("inst/rmarkdown/templates/invoice/skeleton", "skeleton.Rmd",
+    package = "admintools"),
   filename = paste0(Sys.Date(), "-SENDER-RECIPIENT-NUMBER.pdf"),
-  dir = "/",
+  dir = "C:/Users/jonas/Documents/testinvoices",
   verbose = FALSE
 )
 }
 \arguments{
 \item{data}{A data.frame containing project data as returned by report_single}
 
-\item{verbose}{Should some additional information be printed to the console during the knitting process?}
+\item{proj_name}{Name of the project you want to write the invoice for. One of either proj_name or client_name is required.}
+
+\item{template}{Two templates are provided: "organization.Rmd" for organizational clients and "individual.Rmd" for individuals. If these don't meet your needs you can point to your own template.}
 
 \item{clientlist}{A data.frame containing names & contact information for your clients}
-
-\item{proj_name}{Name of the project you want to write the invoice for. One of either proj_name or client_name is required.}
 
 \item{client_name}{Name of the client you want to write the invoice for.  One of either proj_name or client_name is required.}
 }
@@ -33,6 +40,13 @@ Renders and invoice
 By default using the template contained in the package
 }
 \examples{
-render_invoice(df)
-render_invoice(df)
+render_invoice(
+  data = timesheet,
+  client = filter(addresses, Client == "Client B"),
+  address = data.frame(filter(addresses, Client == "talynsight")),
+  proj_name = "Project 1",
+  inv_number = "10098",
+  with = "PI Buck Mulligan, PhD",
+  discount = "10\%"
+  )
 }
