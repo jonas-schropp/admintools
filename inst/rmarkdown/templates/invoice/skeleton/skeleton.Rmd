@@ -1,16 +1,27 @@
 ---
-title: "Template Title"
-author: "Your Name"
-date: "The Date"
-output: output_format
+title: "Invoice Number: `r inv_number`"
+date: "`r Sys.Date()`"
+output:
+  pdf_document
+header-includes:
+ - \usepackage{tabularx}
 always_allow_html: true
 ---
 
-# Invoice Number: `r inv_number` {-}
+\newcolumntype{F}{>{\raggedleft\let\newline\\\arraybackslash\hspace{0pt}}X}
+\newcolumntype{T}{>{\raggedright\let\newline\\\arraybackslash\hspace{0pt}}X}
 
-Dear Representatives of the `r client$Client[1]`, <br>
+\begin{table}[t!]
+\begin{tabularx}{1\textwidth} { T F }
+`r header[2]` & `r header[1]`  \\ 
+`r header[3]` &   \\ 
+\hline
+\end{tabularx}
+\end{table}
 
-My invoice in relation to the project `r proj_name` with `r with` amounts to:
+`r to_name`
+
+`r intro_text`
 
 ```{r echo = FALSE}
 data %>%
@@ -18,38 +29,11 @@ data %>%
     Compensation = paste0(Compensation, " \u20ac"),
     Total = paste0(Total, " \u20ac")
   ) %>%
-  kable()
+  xtable()
 ```
 
-Subtotal: `r paste0(max(data$Total), " \u20ac \n")`
-```{r echo = FALSE,results='asis'}
-# Apply Discounts
-if(!is.null(discount) & grepl("%", discount)) {
-  Subtotal <- max(data$Total) - as.double(gsub("%", "", discount))/100*max(data$Total)
-  discount <- paste0(discount, " discount: -", as.double(gsub("%", "", discount))/100*max(data$Total), " \u20ac \n")
-  cat(paste0(discount, "\n"))
-  cat(paste0("Subtotal: ", Subtotal, " \u20ac \n"))
-} else if (!is.null(discount) & !grepl("%", discount)){
-  Subtotal <- max(data$Total) - as.double(discount)
-  discount <- paste0("Discount: -", discount, " \u20ac \n")
-  cat(paste0(discount, "\n"))
-  paste0("Subtotal: ", Subtotal, " \u20ac \n")
-} else {
-  Subtotal <- max(data$Total)
-}
-```
+`r total`
 
-```{r echo = FALSE,results='asis'}
-# Apply VAT
-if(!is.null(VAT) & grepl("%", VAT)) {
-  vat <- paste0(VAT, " VAT", ": +", as.double(gsub("%", "", VAT))/100*Subtotal, " \u20ac \n")
-  Total <- Subtotal + as.double(gsub("%", "", VAT))/100*Subtotal
-  cat(paste0(vat, "\n"))
-  cat(paste0("Total: ", Total, " \u20ac \n"))
-} else if (is.null(VAT) | VAT == "Reverse Charge") {
-  cat(paste0("Total: ", Subtotal, " \u20ac \n\n"))
-  cat("Reverse Charge Applies")
-}
-```
+
 
 

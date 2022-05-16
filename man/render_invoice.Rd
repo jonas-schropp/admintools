@@ -14,6 +14,7 @@ render_invoice(
   with,
   discount,
   VAT = "20\%",
+  currency = "Euro",
   template = system.file("inst/rmarkdown/templates/invoice/skeleton", "skeleton.Rmd",
     package = "admintools"),
   filename = paste0(Sys.Date(), "-SENDER-RECIPIENT-NUMBER.pdf"),
