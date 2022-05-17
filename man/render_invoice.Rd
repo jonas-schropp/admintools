@@ -2,52 +2,107 @@
 % Please edit documentation in R/render_invoice.R
 \name{render_invoice}
 \alias{render_invoice}
-\title{Renders and invoice
-By default using the template contained in the package}
+\title{Renders an invoice using either the template contained in the package
+or one supplied by the user}
 \usage{
 render_invoice(
   data,
   client,
   address,
-  proj_name,
-  inv_number,
-  with,
-  discount,
+  proj_name = NULL,
+  inv_number = 10001,
+  with = NULL,
+  discount = NULL,
   VAT = "20\%",
   currency = "Euro",
-  template = system.file("inst/rmarkdown/templates/invoice/skeleton", "skeleton.Rmd",
-    package = "admintools"),
+  iban = NULL,
+  bic = NULL,
+  swift = NULL,
+  bank = NULL,
+  intro = NULL,
+  timelimit = NULL,
+  template = system.file("inst/rmarkdown/templates/", "invoice-template.Rmd", package =
+    "admintools"),
   filename = paste0(Sys.Date(), "-SENDER-RECIPIENT-NUMBER.pdf"),
-  dir = "C:/Users/jonas/Documents/testinvoices",
-  verbose = FALSE
+  dir = NULL
 )
 }
 \arguments{
-\item{data}{A data.frame containing project data as returned by report_single}
+\item{data}{A data.frame containing project data as returned by `report_single`. Required.}
 
-\item{proj_name}{Name of the project you want to write the invoice for. One of either proj_name or client_name is required.}
+\item{client}{A data.frame containing names & contact information for your clients Required.}
 
-\item{template}{Two templates are provided: "organization.Rmd" for organizational clients and "individual.Rmd" for individuals. If these don't meet your needs you can point to your own template.}
+\item{address}{A data.frame containing your company address. Required.}
 
-\item{clientlist}{A data.frame containing names & contact information for your clients}
+\item{proj_name}{Name of the project you want to write the invoice for.}
 
-\item{client_name}{Name of the client you want to write the invoice for.  One of either proj_name or client_name is required.}
+\item{inv_number}{invoice number. Required.}
+
+\item{with}{Name of the project leader/manager/principle investigator you worked with.}
+
+\item{discount}{Either NULL (no discount), a number (interpreted as units of whatever currency you use) or a character containing "\%" (interpreted as a percentage).}
+
+\item{VAT}{Either NULL, a percentage (formatted as VAT = "XX\%") or "Reverse Charge".}
+
+\item{currency}{The currency you are using. Euro and Dollar are converted to their respective unicode signs.}
+
+\item{iban}{your IBAN. Either IBAN/BIC or SWIFT are required.}
+
+\item{bic}{your BIC. Either IBAN/BIC or SWIFT are required.}
+
+\item{swift}{Either IBAN/BIC or SWIFT are required.}
+
+\item{bank}{Optional, name of your bank.}
+
+\item{intro}{You can provide a custom intro sentence, if NULL it will be constructed from proj_name and with.}
+
+\item{timelimit}{Optional, either NULL or the number of days until the invoice needs to be settled.}
+
+\item{template}{The template `invoice-template.Rmd` is provided. If it doesn't meet your needs you can point to your own template.}
+
+\item{filename}{Name of the file to be written.}
+
+\item{dir}{Path to the directory.}
 }
 \value{
-A formatted invoice.
+A formatted invoice based on the template and the provided data in pdf format.
 }
 \description{
-Renders and invoice
-By default using the template contained in the package
+Renders an invoice using either the template contained in the package
+or one supplied by the user
 }
 \examples{
-render_invoice(
-  data = timesheet,
-  client = filter(addresses, Client == "Client B"),
-  address = data.frame(filter(addresses, Client == "talynsight")),
-  proj_name = "Project 1",
-  inv_number = "10098",
-  with = "PI Buck Mulligan, PhD",
-  discount = "10\%"
-  )
+timesheet \%>\%
+ comp_table(
+   client_name = "Client A"
+ ) \%>\%
+ render_invoice(
+   client = filter(addresses, Client == "Client A"),
+   address = filter(addresses, Client == "talynsight"),
+   inv_number = "20570",
+   iban = "DE12345678",
+   bic = "BLABLA01",
+   bank = "Parkbank"
+ )
+
+timesheet \%>\%
+  comp_table(
+    client_name = "Client B",
+    proj_name = "Project 1",
+    agg_by = "Month",
+    min_date = as.Date("2022-01-01"),
+    max_date = as.Date("2022-04-30")
+  ) \%>\%
+  render_invoice(
+    client = filter(addresses, Client == "Client B"),
+    address = filter(addresses, Client == "talynsight"),
+    proj_name = "Project 1",
+    inv_number = "10098",
+    iban = "DE12345678",
+    bic = "BLABLA01",
+    bank = "Parkbank",
+    with = "PI Jim Lahey, Trailer Park Supervisor,",
+    discount = "10\%",
+    filename = paste0(Sys.Date(), "-talynsightOÜ-ClientB-10098.pdf")
+ )
 }
