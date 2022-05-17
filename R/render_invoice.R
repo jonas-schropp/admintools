@@ -22,22 +22,25 @@
 #' @return A formatted invoice based on the template and the provided data in pdf format.
 #' @export
 #' @import dplyr
-#' @import assertthat
+#' @importFrom assertthat assert_that
+#' @import tidyselect
 #' @import rmarkdown
-#' @import here
 #' @examples
-#'timesheet %>%
-#'  comp_table(
-#'    client_name = "Client A"
-#'  ) %>%
-#'  render_invoice(
-#'    client = filter(addresses, Client == "Client A"),
-#'    address = filter(addresses, Client == "talynsight"),
-#'    inv_number = "20570",
-#'    iban = "DE12345678",
-#'    bic = "BLABLA01",
-#'    bank = "Parkbank"
-#'  )
+#'
+#' library(dplyr)
+#'
+#' timesheet %>%
+#'   comp_table(
+#'     client_name = "Client A"
+#'   ) %>%
+#'   render_invoice(
+#'     client = filter(addresses, Client == "Client A"),
+#'     address = filter(addresses, Client == "talynsight"),
+#'     inv_number = "20570",
+#'     iban = "DE12345678",
+#'     bic = "BLABLA01",
+#'     bank = "Parkbank"
+#'   )
 #'
 #' timesheet %>%
 #'   comp_table(
@@ -266,37 +269,44 @@ render_invoice.header <- function(
     address,
     client
 ) {
+
   From <- address %>%
     mutate(
-      city = paste0(zip_code, " ", city),
-      vat = paste0("VAT-ID: ", vat_id)
+      city = paste0(.data$zip_code, " ", .data$city),
+      vat = paste0("VAT-ID: ", .data$vat_id)
     ) %>%
-    select(organization, ref, street, city, country, email, phone, vat) %>%
+    select(
+      .data$organization, .data$ref, .data$street, .data$city,
+      .data$country, .data$email, .data$phone, .data$vat
+      ) %>%
     mutate(
-      organization = paste0("\\textbf{", organization, "}"),
-      ref = paste0("\\textbf{", ref, "}")
+      organization = paste0("\\textbf{", .data$organization, "}"),
+      ref = paste0("\\textbf{", .data$ref, "}")
     ) %>%
     unlist()
 
   To <- client %>%
     mutate(
-      city = paste0(zip_code, " ", city),
-      vat = paste0("VAT-ID: ", vat_id),
-      organization = ifelse(is.na(organization), Client, organization)
+      city = paste0(.data$zip_code, " ", .data$city),
+      vat = paste0("VAT-ID: ", .data$vat_id),
+      organization = ifelse(is.na(.data$organization), .data$Client, .data$organization)
     ) %>%
-    select(organization, street, city, country, email, phone, vat) %>%
+    select(
+      .data$organization, .data$street, .data$city, .data$country,
+      .data$email, .data$phone, .data$vat
+      ) %>%
     mutate(
-      organization = paste0("\\textbf{", organization, "}")
+      organization = paste0("\\textbf{", .data$organization, "}")
     ) %>%
     unlist()
 
   Ref <- client %>%
     mutate(
-      ref = ifelse(is.na(ref), NA, paste0("attn: ", ref)),
-      ref_code = ifelse(is.na(ref_code), NA, paste0("ref: ", ref_code)),
-      ref_email = ifelse(is.na(ref_email), NA, paste0("e-mail: ", ref_email))
+      ref = ifelse(is.na(.data$ref), NA, paste0("attn: ", .data$ref)),
+      ref_code = ifelse(is.na(.data$ref_code), NA, paste0("ref: ", .data$ref_code)),
+      ref_email = ifelse(is.na(.data$ref_email), NA, paste0("e-mail: ", .data$ref_email))
       ) %>%
-    select(ref, ref_code, ref_email) %>%
+    select(.data$ref, .data$ref_code, .data$ref_email) %>%
     unlist()
 
   From <- From[!is.na(From)]
@@ -315,11 +325,12 @@ render_invoice.header <- function(
 render_invoice.latextbl <- function(
     data, csym
 ) {
+
   d <- data %>%
     mutate(
-      Compensation = paste0(Compensation, " ", csym),
-      Total = paste0(Total, " ", csym),
-      across(where(is.factor), as.character)
+      Compensation = paste0(.data$Compensation, " ", csym),
+      Total = paste0(.data$Total, " ", csym),
+      across(vars_select_helpers$where(is.factor), as.character)
     )
 
   ncolumns <- ncol(d)

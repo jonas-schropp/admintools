@@ -71,18 +71,21 @@ Renders an invoice using either the template contained in the package
 or one supplied by the user
 }
 \examples{
+
+library(dplyr)
+
 timesheet \%>\%
- comp_table(
-   client_name = "Client A"
- ) \%>\%
- render_invoice(
-   client = filter(addresses, Client == "Client A"),
-   address = filter(addresses, Client == "talynsight"),
-   inv_number = "20570",
-   iban = "DE12345678",
-   bic = "BLABLA01",
-   bank = "Parkbank"
- )
+  comp_table(
+    client_name = "Client A"
+  ) \%>\%
+  render_invoice(
+    client = filter(addresses, Client == "Client A"),
+    address = filter(addresses, Client == "talynsight"),
+    inv_number = "20570",
+    iban = "DE12345678",
+    bic = "BLABLA01",
+    bank = "Parkbank"
+  )
 
 timesheet \%>\%
   comp_table(

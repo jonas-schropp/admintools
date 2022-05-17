@@ -6,8 +6,9 @@ Author: Jonas Schropp
 Maintainer: Jonas Schropp <jonas.schropp@protonmail.com>
 Description: Reporting of the time worked either fine-grained with daily tasks or more roughly with an overview over several months.
     Creation of invoices.
-License: What license is it under?
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
-Imports: dplyr, knitr
+Imports: dplyr, rmarkdown, assertthat, tidyselect
+Depends: R (>= 3.5.0)
 RoxygenNote: 7.1.2

@@ -4,8 +4,8 @@
 #'
 #' @param data A data.frame containing project data
 #' @param agg_by NULL if detailed item-by-item output is desired, a character vector with one or more of "Month", "Task", "Project" otherwise
-#' @param mindate A date in the format as.Date("yyyy-mm-dd")
-#' @param maxdate A date in the format as.Date("yyyy-mm-dd")
+#' @param min_date A date in the format as.Date("yyyy-mm-dd")
+#' @param max_date A date in the format as.Date("yyyy-mm-dd")
 #' @param proj_name If output for only one project is desired, the name of the project
 #' @param client_name If output for only one client is desired, the name of the client
 #' @param available_comp If working on a retainer basis, the amount of money available at the start of the project
@@ -15,62 +15,65 @@
 #' @param project Name of the Project column in your data set
 #' @param client Name of the Client column in your data set
 #' @param task Name of the column containing a Short description of the task carried out in specified time frame
-#' @param table should a kable be returned or the raw data.frame?
 #' @return A formatted table of compensation grouped by either combination of month, project and client.
 #' @export
 #' @import dplyr
 #' @import assertthat
 #' @examples
-#' comp_table(data = timesheet, client_name = "Client B")
-#' comp_table(data = timesheet, agg_by = "Task", min_date = as.Date("2022-01-01"), max_date = as.Date("2022-04-30"))
-#' comp_table(data = timesheet, agg_by = "Task", min_date = as.Date("2022-01-01"), max_date = as.Date("2022-04-30"), proj_name = "Project 1")
+#'
+#' library(dplyr)
+#'
+#' comp_table(
+#'   data = timesheet,
+#'   client_name = "Client B"
+#'   )
+#'
+#' comp_table(
+#'   data = timesheet,
+#'   agg_by = "Task",
+#'   min_date = as.Date("2022-01-01"),
+#'   max_date = as.Date("2022-04-30")
+#'   )
+#'
+#' comp_table(
+#'   data = timesheet,
+#'   agg_by = "Task",
+#'   min_date = as.Date("2022-01-01"),
+#'   max_date = as.Date("2022-04-30"),
+#'   proj_name = "Project 1"
+#'   )
 
 comp_table <- function(
     data,
     agg_by = c("Month", "Task", "Project"),
-
     min_date = NULL,
     max_date = NULL,
-
     proj_name = NULL,
     client_name = NULL,
-
     available_comp = NULL,
-    verbose = FALSE,
-
-    date = Date,
-    hours = Hours,
-    compensation = Compensation,
-    project = Project,
-    task = Task,
-    client = Client
+    date = "Date",
+    hours = "Hours",
+    compensation = "Compensation",
+    project = "Project",
+    task = "Task",
+    client = "Client"
 ) {
-
-  # Run some simple tests to check that input makes sense
-  assert_that(
-    not_empty(proj_name) | not_empty(client_name),
-    msg = "Error: Neither proj_name nor client_name specified"
-  )
 
   data <- data %>%
     rename(
-      Date = {{ date }},
-      Hours = {{ hours }},
-      Compensation = {{ compensation }},
-      Project = {{ project }},
-      Task = {{ task }},
-      Client = {{ client }}
+      Date = date,
+      Hours = hours,
+      Compensation = compensation,
+      Project = project,
+      Task = task,
+      Client = client
     )
+
+  Date <- Client <- Hours <- Task <- Compensation <- Total <- Project <- NULL
 
   # Filter data set
   if(!is.null(proj_name)) { data <- filter(data, Project == proj_name) }
   if(!is.null(client_name)) { data <- filter(data, Client == client_name) }
-
-  if(verbose) {
-    if(is.null(min_date) & is.null(max_date)) {
-      cat("\nNo min or max date specified, using entire available data.\n")
-      }
-  }
 
   if(!is.null(min_date)) { data <- filter(data, Date >= min_date) }
   if(!is.null(max_date)) { data <- filter(data, Date <= max_date) }
@@ -95,6 +98,8 @@ comp_table <- function(
 
 comp_table.aggregated <- function(data, agg_by) {
 
+  Date <- Client <- Hours <- Task <- Compensation <- Total <- Project <- NULL
+
   data <- data %>%
     select(Date, Client, Project, Task, Hours, Compensation) %>%
     mutate(Month = factor(months.Date(Date), levels = month.name)) %>%
@@ -117,6 +122,8 @@ comp_table.aggregated <- function(data, agg_by) {
 
 
 comp_table.detailed <- function(data) {
+
+  Date <- Client <- Hours <- Task <- Compensation <- Total <- Project <- NULL
 
   data <- data %>%
     select(Date, Client, Project, Task, Hours, Compensation) %>%

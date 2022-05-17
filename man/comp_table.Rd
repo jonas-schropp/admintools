@@ -14,19 +14,22 @@ comp_table(
   proj_name = NULL,
   client_name = NULL,
   available_comp = NULL,
-  verbose = FALSE,
-  date = Date,
-  hours = Hours,
-  compensation = Compensation,
-  project = Project,
-  task = Task,
-  client = Client
+  date = "Date",
+  hours = "Hours",
+  compensation = "Compensation",
+  project = "Project",
+  task = "Task",
+  client = "Client"
 )
 }
 \arguments{
 \item{data}{A data.frame containing project data}
 
 \item{agg_by}{NULL if detailed item-by-item output is desired, a character vector with one or more of "Month", "Task", "Project" otherwise}
+
+\item{min_date}{A date in the format as.Date("yyyy-mm-dd")}
+
+\item{max_date}{A date in the format as.Date("yyyy-mm-dd")}
 
 \item{proj_name}{If output for only one project is desired, the name of the project}
 
@@ -45,12 +48,6 @@ comp_table(
 \item{task}{Name of the column containing a Short description of the task carried out in specified time frame}
 
 \item{client}{Name of the Client column in your data set}
-
-\item{mindate}{A date in the format as.Date("yyyy-mm-dd")}
-
-\item{maxdate}{A date in the format as.Date("yyyy-mm-dd")}
-
-\item{table}{should a kable be returned or the raw data.frame?}
 }
 \value{
 A formatted table of compensation grouped by either combination of month, project and client.
@@ -61,7 +58,26 @@ Containing the hours worked on a specific project within a specified timeframe
 Uses lazy evaluation
 }
 \examples{
-comp_table(data = timesheet, client_name = "Client B")
-comp_table(data = timesheet, agg_by = "Task", min_date = as.Date("2022-01-01"), max_date = as.Date("2022-04-30"))
-comp_table(data = timesheet, agg_by = "Task", min_date = as.Date("2022-01-01"), max_date = as.Date("2022-04-30"), proj_name = "Project 1")
+
+library(dplyr)
+
+comp_table(
+  data = timesheet,
+  client_name = "Client B"
+  )
+
+comp_table(
+  data = timesheet,
+  agg_by = "Task",
+  min_date = as.Date("2022-01-01"),
+  max_date = as.Date("2022-04-30")
+  )
+
+comp_table(
+  data = timesheet,
+  agg_by = "Task",
+  min_date = as.Date("2022-01-01"),
+  max_date = as.Date("2022-04-30"),
+  proj_name = "Project 1"
+  )
 }

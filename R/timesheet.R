@@ -3,6 +3,8 @@
 #' The data set contains information on work carried out during three months
 #' as an example how a timesheet to be used with this package could/should look.
 #'
+#' @title timesheet
+#' @docType data
 #' @format A data frame with 80 rows and 7 variables:
 #' \describe{
 #'   \item{Date}{Date when work was carried out}
@@ -16,4 +18,6 @@
 #'   \item{Compensation}{Hours*Hourly}
 #'}
 #'
-#' @export
+#' @source home made
+#' @keywords data
+"timesheet"
