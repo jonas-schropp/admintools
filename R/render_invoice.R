@@ -11,7 +11,7 @@
 #' @param VAT Either NULL, a percentage (formatted as VAT = "XX\%") or "Reverse Charge".
 #' @param currency The currency you are using. Euro and Dollar are converted to their respective unicode signs.
 #' @param intro You can provide a custom intro sentence, if NULL it will be constructed from proj_name and with.
-#' @param template The template `invoice-template.Rmd` is provided. If it doesn't meet your needs you can point to your own template.
+#' @param template The template `invoice-template` is provided. If it doesn't meet your needs you can point to your own template.
 #' @param filename Name of the file to be written.
 #' @param dir Path to the directory.
 #' @param iban your IBAN. Either IBAN/BIC or SWIFT are required.
@@ -77,8 +77,8 @@ render_invoice <- function(
   bank = NULL,
   intro = NULL,
   timelimit = NULL,
-  template = system.file("inst/rmarkdown/templates/", "invoice-template.Rmd", package = "admintools"),
-  filename = paste0(Sys.Date(), "-SENDER-RECIPIENT-NUMBER.pdf"),
+  template = "invoice-template",
+  filename = paste0(Sys.Date(), "-SENDER-RECIPIENT-NUMBER"),
   dir = NULL
 ) {
 
@@ -181,6 +181,14 @@ render_invoice <- function(
 
   company <- address$organization
   signer <- address$ref
+
+  if (template == "invoice-template" ) {
+    template <- draft(filename, template = "invoice-template", package = "admintools")
+  } else {
+    template <- draft(filename, template = template)
+  }
+
+  filename <- paste0(filename, ".pdf")
 
   # Pass on to r markdown
   render(
