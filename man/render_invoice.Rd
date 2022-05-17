@@ -21,9 +21,8 @@ render_invoice(
   bank = NULL,
   intro = NULL,
   timelimit = NULL,
-  template = system.file("inst/rmarkdown/templates/", "invoice-template.Rmd", package =
-    "admintools"),
-  filename = paste0(Sys.Date(), "-SENDER-RECIPIENT-NUMBER.pdf"),
+  template = "invoice-template",
+  filename = paste0(Sys.Date(), "-SENDER-RECIPIENT-NUMBER"),
   dir = NULL
 )
 }
@@ -58,7 +57,7 @@ render_invoice(
 
 \item{timelimit}{Optional, either NULL or the number of days until the invoice needs to be settled.}
 
-\item{template}{The template `invoice-template.Rmd` is provided. If it doesn't meet your needs you can point to your own template.}
+\item{template}{The template `invoice-template` is provided. If it doesn't meet your needs you can point to your own template.}
 
 \item{filename}{Name of the file to be written.}
 
