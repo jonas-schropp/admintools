@@ -15,3 +15,5 @@
 #'   \item{Hourly}{The hourly compensation in whatever currency you use.}
 #'   \item{Compensation}{Hours*Hourly}
 #'}
+#'
+#' @export

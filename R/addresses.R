@@ -19,3 +19,5 @@
 #'   \item{ref_email}{Does the reference person have their own email?}
 #'   \item{VAT}{Either 'Reverse Charge' or a Percentage.}
 #'}
+#'
+#'@export

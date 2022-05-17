@@ -61,7 +61,7 @@ Containing the hours worked on a specific project within a specified timeframe
 Uses lazy evaluation
 }
 \examples{
-comp_table(data = df, client_name = "INSEL")
-comp_table(data = df, agg_by = "Task", min_date = as.Date("2022-01-01"), max_date = as.Date("2022-04-30"), proj_name = "FIMADIA")
-comp_table(data = df, agg_by = "Task", min_date = as.Date("2022-01-01"), max_date = as.Date("2022-04-30"), proj_name = "FIMADIA")
+comp_table(data = timesheet, client_name = "Client B")
+comp_table(data = timesheet, agg_by = "Task", min_date = as.Date("2022-01-01"), max_date = as.Date("2022-04-30"))
+comp_table(data = timesheet, agg_by = "Task", min_date = as.Date("2022-01-01"), max_date = as.Date("2022-04-30"), proj_name = "Project 1")
 }
