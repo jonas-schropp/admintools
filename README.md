@@ -2,7 +2,8 @@
 
 This is not on CRAN and will most likely never be on CRAN. It’s designed
 to help me with creating invoices first and foremost, and if it helps
-you/inspires you to do so as well, good.  
+you/inspires you to do so as well, good.
+
 Installation via `devtools`:
 
     devtools::install_github("jonas-schropp/admintools")
@@ -70,6 +71,8 @@ The package has two main functions: `comp_table` and `render_invoice`.
 
 # Examples
 
+    suppressPackageStartupMessages(library(dplyr))
+
 ## Create some aggregated tables using `comp_table`
 
 Pick everything from Client B, don’t perform any more aggregation or
@@ -78,22 +81,255 @@ filtering:
     comp_table(
       data = timesheet,
       client_name = "Client B"
-      )
+      ) %>%
+      knitr::kable()
 
-    ## # A tibble: 29 × 6
-    ##    Month    Task                Project   Hours Compensation Total
-    ##    <fct>    <chr>               <chr>     <int>        <dbl> <dbl>
-    ##  1 January  data analysis       Project 1     4          360   360
-    ##  2 January  data analysis       Project 3    17         1530  1890
-    ##  3 January  predictive modeling Project 1     5          450  2340
-    ##  4 January  reporting           Project 2    22         1980  4320
-    ##  5 February data analysis       Project 1    28         2520  6840
-    ##  6 February data analysis       Project 3     8          720  7560
-    ##  7 February NLP                 Project 2     9          810  8370
-    ##  8 February NLP                 Project 3     5          450  8820
-    ##  9 February predictive modeling Project 2    15         1350 10170
-    ## 10 February reporting           Project 1     5          450 10620
-    ## # … with 19 more rows
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Month</th>
+<th style="text-align: left;">Task</th>
+<th style="text-align: left;">Project</th>
+<th style="text-align: right;">Hours</th>
+<th style="text-align: right;">Compensation</th>
+<th style="text-align: right;">Total</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">January</td>
+<td style="text-align: left;">data analysis</td>
+<td style="text-align: left;">Project 1</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">360</td>
+<td style="text-align: right;">360</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">January</td>
+<td style="text-align: left;">data analysis</td>
+<td style="text-align: left;">Project 3</td>
+<td style="text-align: right;">17</td>
+<td style="text-align: right;">1530</td>
+<td style="text-align: right;">1890</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">January</td>
+<td style="text-align: left;">predictive modeling</td>
+<td style="text-align: left;">Project 1</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">450</td>
+<td style="text-align: right;">2340</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">January</td>
+<td style="text-align: left;">reporting</td>
+<td style="text-align: left;">Project 2</td>
+<td style="text-align: right;">22</td>
+<td style="text-align: right;">1980</td>
+<td style="text-align: right;">4320</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">February</td>
+<td style="text-align: left;">data analysis</td>
+<td style="text-align: left;">Project 1</td>
+<td style="text-align: right;">28</td>
+<td style="text-align: right;">2520</td>
+<td style="text-align: right;">6840</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">February</td>
+<td style="text-align: left;">data analysis</td>
+<td style="text-align: left;">Project 3</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">720</td>
+<td style="text-align: right;">7560</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">February</td>
+<td style="text-align: left;">NLP</td>
+<td style="text-align: left;">Project 2</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">810</td>
+<td style="text-align: right;">8370</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">February</td>
+<td style="text-align: left;">NLP</td>
+<td style="text-align: left;">Project 3</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">450</td>
+<td style="text-align: right;">8820</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">February</td>
+<td style="text-align: left;">predictive modeling</td>
+<td style="text-align: left;">Project 2</td>
+<td style="text-align: right;">15</td>
+<td style="text-align: right;">1350</td>
+<td style="text-align: right;">10170</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">February</td>
+<td style="text-align: left;">reporting</td>
+<td style="text-align: left;">Project 1</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">450</td>
+<td style="text-align: right;">10620</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">February</td>
+<td style="text-align: left;">reporting</td>
+<td style="text-align: left;">Project 3</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">540</td>
+<td style="text-align: right;">11160</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">March</td>
+<td style="text-align: left;">data analysis</td>
+<td style="text-align: left;">Project 2</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">450</td>
+<td style="text-align: right;">11610</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">March</td>
+<td style="text-align: left;">meeting</td>
+<td style="text-align: left;">Project 1</td>
+<td style="text-align: right;">15</td>
+<td style="text-align: right;">1350</td>
+<td style="text-align: right;">12960</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">March</td>
+<td style="text-align: left;">meeting</td>
+<td style="text-align: left;">Project 2</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">630</td>
+<td style="text-align: right;">13590</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">March</td>
+<td style="text-align: left;">meeting</td>
+<td style="text-align: left;">Project 3</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">360</td>
+<td style="text-align: right;">13950</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">March</td>
+<td style="text-align: left;">NLP</td>
+<td style="text-align: left;">Project 2</td>
+<td style="text-align: right;">13</td>
+<td style="text-align: right;">1170</td>
+<td style="text-align: right;">15120</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">March</td>
+<td style="text-align: left;">NLP</td>
+<td style="text-align: left;">Project 3</td>
+<td style="text-align: right;">17</td>
+<td style="text-align: right;">1530</td>
+<td style="text-align: right;">16650</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">March</td>
+<td style="text-align: left;">predictive modeling</td>
+<td style="text-align: left;">Project 1</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">540</td>
+<td style="text-align: right;">17190</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">March</td>
+<td style="text-align: left;">predictive modeling</td>
+<td style="text-align: left;">Project 3</td>
+<td style="text-align: right;">11</td>
+<td style="text-align: right;">990</td>
+<td style="text-align: right;">18180</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">March</td>
+<td style="text-align: left;">reporting</td>
+<td style="text-align: left;">Project 1</td>
+<td style="text-align: right;">14</td>
+<td style="text-align: right;">1260</td>
+<td style="text-align: right;">19440</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">March</td>
+<td style="text-align: left;">reporting</td>
+<td style="text-align: left;">Project 2</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">630</td>
+<td style="text-align: right;">20070</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">March</td>
+<td style="text-align: left;">reporting</td>
+<td style="text-align: left;">Project 3</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">720</td>
+<td style="text-align: right;">20790</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">April</td>
+<td style="text-align: left;">data analysis</td>
+<td style="text-align: left;">Project 2</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">630</td>
+<td style="text-align: right;">21420</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">April</td>
+<td style="text-align: left;">data analysis</td>
+<td style="text-align: left;">Project 3</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">900</td>
+<td style="text-align: right;">22320</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">April</td>
+<td style="text-align: left;">meeting</td>
+<td style="text-align: left;">Project 1</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">360</td>
+<td style="text-align: right;">22680</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">April</td>
+<td style="text-align: left;">NLP</td>
+<td style="text-align: left;">Project 1</td>
+<td style="text-align: right;">14</td>
+<td style="text-align: right;">1260</td>
+<td style="text-align: right;">23940</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">April</td>
+<td style="text-align: left;">NLP</td>
+<td style="text-align: left;">Project 2</td>
+<td style="text-align: right;">17</td>
+<td style="text-align: right;">1530</td>
+<td style="text-align: right;">25470</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">April</td>
+<td style="text-align: left;">NLP</td>
+<td style="text-align: left;">Project 3</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">630</td>
+<td style="text-align: right;">26100</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">April</td>
+<td style="text-align: left;">reporting</td>
+<td style="text-align: left;">Project 3</td>
+<td style="text-align: right;">15</td>
+<td style="text-align: right;">1350</td>
+<td style="text-align: right;">27450</td>
+</tr>
+</tbody>
+</table>
 
 Summarize for yourself how much time you spent on each specific task
 during a specified time period:
@@ -103,16 +339,51 @@ during a specified time period:
       agg_by = "Task",
       min_date = as.Date("2022-01-01"),
       max_date = as.Date("2022-04-30")
-      )
+      ) %>%
+      knitr::kable()
 
-    ## # A tibble: 5 × 4
-    ##   Task                Hours Compensation Total
-    ##   <chr>               <int>        <dbl> <dbl>
-    ## 1 data analysis         117        11670 11670
-    ## 2 meeting                59         6180 17850
-    ## 3 NLP                   140        14340 32190
-    ## 4 predictive modeling    76         8010 40200
-    ## 5 reporting             144        14970 55170
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Task</th>
+<th style="text-align: right;">Hours</th>
+<th style="text-align: right;">Compensation</th>
+<th style="text-align: right;">Total</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">data analysis</td>
+<td style="text-align: right;">117</td>
+<td style="text-align: right;">11670</td>
+<td style="text-align: right;">11670</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">meeting</td>
+<td style="text-align: right;">59</td>
+<td style="text-align: right;">6180</td>
+<td style="text-align: right;">17850</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">NLP</td>
+<td style="text-align: right;">140</td>
+<td style="text-align: right;">14340</td>
+<td style="text-align: right;">32190</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">predictive modeling</td>
+<td style="text-align: right;">76</td>
+<td style="text-align: right;">8010</td>
+<td style="text-align: right;">40200</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">reporting</td>
+<td style="text-align: right;">144</td>
+<td style="text-align: right;">14970</td>
+<td style="text-align: right;">55170</td>
+</tr>
+</tbody>
+</table>
 
 Do the same, but only for a specific project:
 
@@ -122,16 +393,51 @@ Do the same, but only for a specific project:
       min_date = as.Date("2022-01-01"),
       max_date = as.Date("2022-04-30"),
       proj_name = "Project 1"
-      )
+      ) %>%
+      knitr::kable()
 
-    ## # A tibble: 5 × 4
-    ##   Task                Hours Compensation Total
-    ##   <chr>               <int>        <dbl> <dbl>
-    ## 1 data analysis          32         2880  2880
-    ## 2 meeting                19         1710  4590
-    ## 3 NLP                    14         1260  5850
-    ## 4 predictive modeling    11          990  6840
-    ## 5 reporting              19         1710  8550
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Task</th>
+<th style="text-align: right;">Hours</th>
+<th style="text-align: right;">Compensation</th>
+<th style="text-align: right;">Total</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">data analysis</td>
+<td style="text-align: right;">32</td>
+<td style="text-align: right;">2880</td>
+<td style="text-align: right;">2880</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">meeting</td>
+<td style="text-align: right;">19</td>
+<td style="text-align: right;">1710</td>
+<td style="text-align: right;">4590</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">NLP</td>
+<td style="text-align: right;">14</td>
+<td style="text-align: right;">1260</td>
+<td style="text-align: right;">5850</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">predictive modeling</td>
+<td style="text-align: right;">11</td>
+<td style="text-align: right;">990</td>
+<td style="text-align: right;">6840</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">reporting</td>
+<td style="text-align: right;">19</td>
+<td style="text-align: right;">1710</td>
+<td style="text-align: right;">8550</td>
+</tr>
+</tbody>
+</table>
 
 ## Create an invoice
 
@@ -178,5 +484,10 @@ customized via *intro*) and add a discount:
         discount = "10%",
         VAT = "Reverse Charge",
         currency = "Euro",
-        filename = paste0(Sys.Date(), "-talynsightOÜ-ClientB-10098.pdf")
+        filename = paste0(Sys.Date(), "-talynsightOÜ-ClientB-10098.pdf"),
+        dir = "C:/invoices"
      )
+
+When you run this code, first a window with the newly created .Rmd file
+will pop up. Click ok and the pdf will be rendered to the directory you
+specified.

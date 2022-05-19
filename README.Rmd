@@ -13,6 +13,7 @@ knitr::opts_chunk$set(echo = TRUE)
 # Installation
 
 This is not on CRAN and will most likely never be on CRAN. It's designed to help me with creating invoices first and foremost, and if it helps you/inspires you to do so as well, good.  
+
 Installation via `devtools`:  
 ```{r eval=FALSE}
 devtools::install_github("jonas-schropp/admintools")
@@ -42,6 +43,11 @@ The package has two main functions: `comp_table` and `render_invoice`.
  
 # Examples
 
+```{r}
+suppressPackageStartupMessages(library(dplyr))
+```
+
+
 ## Create some aggregated tables using `comp_table`
 
 Pick everything from Client B, don't perform any more aggregation or filtering:
@@ -49,7 +55,8 @@ Pick everything from Client B, don't perform any more aggregation or filtering:
 comp_table(
   data = timesheet,
   client_name = "Client B"
-  )
+  ) %>%
+  knitr::kable()
 ```
 
 Summarize for yourself how much time you spent on each specific task during a specified time period:
@@ -59,7 +66,8 @@ comp_table(
   agg_by = "Task",
   min_date = as.Date("2022-01-01"),
   max_date = as.Date("2022-04-30")
-  )
+  ) %>%
+  knitr::kable()
 ```
 
 Do the same, but only for a specific project:
@@ -70,7 +78,8 @@ comp_table(
   min_date = as.Date("2022-01-01"),
   max_date = as.Date("2022-04-30"),
   proj_name = "Project 1"
-  )
+  ) %>%
+  knitr::kable()
 ```
 
 ## Create an invoice
@@ -115,11 +124,12 @@ timesheet %>%
     discount = "10%",
     VAT = "Reverse Charge",
     currency = "Euro",
-    filename = paste0(Sys.Date(), "-talynsightOÜ-ClientB-10098.pdf")
+    filename = paste0(Sys.Date(), "-talynsightOÜ-ClientB-10098.pdf"),
+    dir = "C:/invoices"
  )
 ```
 
-
+When you run this code, first a window with the newly created .Rmd file will pop up. Click ok and the pdf will be rendered to the directory you specified.
 
 
 
