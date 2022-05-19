@@ -1,0 +1,125 @@
+---
+title: "admintools"
+subtitle: "tools to create invoices and organize timesheets within R" 
+author: "Jonas Schropp"
+date: '2022-05-19'
+output: md_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Installation
+
+This is not on CRAN and will most likely never be on CRAN. It's designed to help me with creating invoices first and foremost, and if it helps you/inspires you to do so as well, good.  
+Installation via `devtools`:  
+```{r eval=FALSE}
+devtools::install_github("jonas-schropp/admintools")
+```
+
+And then load it like any other library
+```{r}
+library(admintools)
+```
+
+# Overview
+
+`admintools` comes with two syntetic data sets to illustrate usage and to make starting out and testing easier: `addresses` and `timesheets`. `addresses` is a data.frame containing contact information for several hypothetical clients. For simplicity it also contains the "sender" address in the first line in order to facilitate creating the header for invoices.
+```{r}
+str(addresses)
+```
+
+`timesheets` is an example how a timesheet to track work could look like. 
+```{r}
+str(timesheet)
+```
+
+The package has two main functions: `comp_table` and `render_invoice`. 
+
+ - `comp_table` is mostly a wrapper over several `dplyr` functions for aggregating and summarizing data that can be used to easily and quickly transform data from the timesheet into a format that is useful for reporting. 
+ - `render_invoice` renders an invoice in pdf format, using either the template supplied with this package or a template of your own. If you want to use your own template, try to work around the existing one and only change the styling of the output rather than the content - otherwise the code will likely break because `render_invoice` performs quite a lot of computation to transform the R output into LaTeX code even before passing it on to `rmarkdown`.
+ 
+# Examples
+
+## Create some aggregated tables using `comp_table`
+
+Pick everything from Client B, don't perform any more aggregation or filtering:
+```{r}
+comp_table(
+  data = timesheet,
+  client_name = "Client B"
+  )
+```
+
+Summarize for yourself how much time you spent on each specific task during a specified time period:
+```{r}
+comp_table(
+  data = timesheet,
+  agg_by = "Task",
+  min_date = as.Date("2022-01-01"),
+  max_date = as.Date("2022-04-30")
+  )
+```
+
+Do the same, but only for a specific project:
+```{r}
+comp_table(
+  data = timesheet,
+  agg_by = "Task",
+  min_date = as.Date("2022-01-01"),
+  max_date = as.Date("2022-04-30"),
+  proj_name = "Project 1"
+  )
+```
+
+## Create an invoice
+
+In order to create invoices, it's necessary to first aggregate and filter your timesheet and then pass it on to `render_invoice`.  
+
+If we want to create an invoice for all the work we've ever done for *Client A*, each task reported in detail:
+```{r eval = FALSE}
+timesheet %>%
+  comp_table(
+    client_name = "Client A"
+  ) %>%
+  render_invoice(
+    client = filter(addresses, Client == "Client A"),
+    address = filter(addresses, Client == "talynsight"),
+    inv_number = "20570",
+    iban = "DE12345678",
+    bic = "BLABLA01",
+    bank = "Parkbank"
+  )
+```
+
+A lot more customization is possible too, for example we can customize the introduction text by specifying *proj_name* and *with* (or fully customized via *intro*) and add a discount:
+```{r eval = FALSE}
+timesheet %>%
+  comp_table(
+    client_name = "Client B",
+    proj_name = "Project 1",
+    agg_by = "Month",
+    min_date = as.Date("2022-01-01"),
+    max_date = as.Date("2022-04-30")
+  ) %>%
+  render_invoice(
+    client = filter(addresses, Client == "Client B"),
+    address = filter(addresses, Client == "talynsight"),
+    proj_name = "Project 1",
+    inv_number = "10098",
+    iban = "DE12345678",
+    bic = "BLABLA01",
+    bank = "Parkbank",
+    with = "PI Jim Lahey, Trailer Park Supervisor,",
+    discount = "10%",
+    VAT = "Reverse Charge",
+    currency = "Euro",
+    filename = paste0(Sys.Date(), "-talynsightOÜ-ClientB-10098.pdf")
+ )
+```
+
+
+
+
+
